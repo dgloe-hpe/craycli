@@ -53,11 +53,14 @@ def api(data, callback, base=''):
     """ Decorator that will send endpoint data into commands """
 
     def tags_decorator(func):  # pylint: disable=missing-docstring
-        def func_wrapper(*args, **kwargs):  # pylint: disable=missing-docstring
+        def func_wrapper(*args, data_handler=None, **kwargs):  # pylint: disable=missing-docstring
             kwargs['base'] = base
             args = _parse_data(data, **kwargs)
+            if data_handler:
+                args=data_handler(args)
             opts = args[-1]
             opts['callback'] = callback
+            print(args[:-1], opts)
             return func(*args[:-1], **opts)
         return func_wrapper
     return tags_decorator
